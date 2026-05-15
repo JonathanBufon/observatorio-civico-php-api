@@ -1,0 +1,11 @@
+vendor/
+node_modules/
+.git/
+.idea/
+.claude/
+.cursor/
+.windsurf/
+.agents/
+storage/logs/*
+tests/experiment/
+backlog/
