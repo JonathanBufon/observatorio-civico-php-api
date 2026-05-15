@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'ai' => [
+        'api_key' => env('AI_API_KEY'),
+        'model' => env('AI_MODEL', 'gpt-4o'),
+        'max_tokens' => env('AI_MAX_TOKENS', 4096),
+        'rate_limit_rpm' => env('AI_RATE_LIMIT_RPM', 50),
+    ],
+
 ];

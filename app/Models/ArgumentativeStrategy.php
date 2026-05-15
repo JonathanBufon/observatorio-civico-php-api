@@ -12,6 +12,7 @@ class ArgumentativeStrategy extends Model
     protected $fillable = [
         'analysis_id',
         'strategy_name',
+        'who_uses',
         'excerpt',
         'explanation',
         'severity',

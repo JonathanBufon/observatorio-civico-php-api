@@ -1,6 +1,8 @@
-# Observatorio Civico
+# Observatorio Civico — API
 
-Plataforma de leitura critica de noticias politicas brasileiras, assistida por IA.
+API REST em Laravel para a plataforma Observatorio Civico: leitura critica de noticias politicas brasileiras, assistida por IA.
+
+Este repositorio contem exclusivamente o backend (API) do projeto. O frontend e desenvolvido em repositorio separado.
 
 ## O Problema
 
