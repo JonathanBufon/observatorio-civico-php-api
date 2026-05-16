@@ -102,6 +102,9 @@ make logs-app      # logs do app
 
 - `AGENTS.md` -- Analise conceitual do projeto (stress-test com The Fool)
 - `backlog/` -- Planos de implementacao e licoes aprendidas
+- `docs/api/` -- Documentacao da API REST
+- `docs/openapi.yaml` -- Contrato OpenAPI da API v1
+- `docs/postman/observatorio-civico-api.postman_collection.json` -- Colecao Postman importavel
 - `tests/experiment/` -- Prova de conceito do pipeline de analise IA
 
 ## Licenca

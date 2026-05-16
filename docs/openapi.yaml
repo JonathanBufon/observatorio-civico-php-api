@@ -1,0 +1,251 @@
+openapi: 3.1.0
+info:
+  title: Observatorio Civico API
+  version: 1.0.0
+  description: API REST para leitura critica de noticias politicas brasileiras.
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Docker local
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Status da API
+      responses:
+        "200":
+          description: API no ar
+  /sources:
+    get:
+      tags: [Sources]
+      summary: Lista fontes RSS
+      parameters:
+        - $ref: "#/components/parameters/PerPage"
+        - name: active
+          in: query
+          schema:
+            type: boolean
+        - name: editorial_leaning
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista paginada de fontes
+  /sources/{source}:
+    get:
+      tags: [Sources]
+      summary: Detalha uma fonte
+      parameters:
+        - $ref: "#/components/parameters/SourceId"
+      responses:
+        "200":
+          description: Fonte encontrada
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /sources/{source}/articles:
+    get:
+      tags: [Sources, Articles]
+      summary: Lista artigos de uma fonte
+      parameters:
+        - $ref: "#/components/parameters/SourceId"
+        - $ref: "#/components/parameters/PerPage"
+        - $ref: "#/components/parameters/HasAnalysis"
+        - $ref: "#/components/parameters/PublishedFrom"
+        - $ref: "#/components/parameters/PublishedTo"
+        - $ref: "#/components/parameters/Search"
+      responses:
+        "200":
+          description: Lista paginada de artigos
+  /articles:
+    get:
+      tags: [Articles]
+      summary: Lista artigos
+      parameters:
+        - $ref: "#/components/parameters/PerPage"
+        - name: source_id
+          in: query
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/HasAnalysis"
+        - $ref: "#/components/parameters/PublishedFrom"
+        - $ref: "#/components/parameters/PublishedTo"
+        - $ref: "#/components/parameters/Search"
+      responses:
+        "200":
+          description: Lista paginada de artigos
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /articles/{article}:
+    get:
+      tags: [Articles]
+      summary: Detalha um artigo
+      parameters:
+        - $ref: "#/components/parameters/ArticleId"
+      responses:
+        "200":
+          description: Artigo encontrado
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /articles/{article}/analysis:
+    get:
+      tags: [Articles, Analyses]
+      summary: Retorna analise de um artigo
+      parameters:
+        - $ref: "#/components/parameters/ArticleId"
+      responses:
+        "200":
+          description: Analise encontrada
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /analyses:
+    get:
+      tags: [Analyses]
+      summary: Lista analises
+      parameters:
+        - $ref: "#/components/parameters/PerPage"
+        - name: source_id
+          in: query
+          schema:
+            type: integer
+        - name: model_used
+          in: query
+          schema:
+            type: string
+        - name: prompt_version
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista paginada de analises
+  /analyses/{analysis}:
+    get:
+      tags: [Analyses]
+      summary: Detalha uma analise
+      parameters:
+        - $ref: "#/components/parameters/AnalysisId"
+      responses:
+        "200":
+          description: Analise encontrada
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /events:
+    get:
+      tags: [Events]
+      summary: Lista eventos
+      parameters:
+        - $ref: "#/components/parameters/PerPage"
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista paginada de eventos
+  /events/{event}:
+    get:
+      tags: [Events]
+      summary: Detalha evento
+      parameters:
+        - $ref: "#/components/parameters/EventId"
+      responses:
+        "200":
+          description: Evento encontrado
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /events/{event}/comparison:
+    get:
+      tags: [Events]
+      summary: Retorna comparacao multi-fonte
+      parameters:
+        - $ref: "#/components/parameters/EventId"
+      responses:
+        "200":
+          description: Comparacao encontrada
+        "404":
+          $ref: "#/components/responses/NotFound"
+components:
+  parameters:
+    PerPage:
+      name: per_page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+    SourceId:
+      name: source
+      in: path
+      required: true
+      schema:
+        type: integer
+    ArticleId:
+      name: article
+      in: path
+      required: true
+      schema:
+        type: integer
+    AnalysisId:
+      name: analysis
+      in: path
+      required: true
+      schema:
+        type: integer
+    EventId:
+      name: event
+      in: path
+      required: true
+      schema:
+        type: integer
+    HasAnalysis:
+      name: has_analysis
+      in: query
+      schema:
+        type: boolean
+    PublishedFrom:
+      name: published_from
+      in: query
+      schema:
+        type: string
+        format: date
+    PublishedTo:
+      name: published_to
+      in: query
+      schema:
+        type: string
+        format: date
+    Search:
+      name: q
+      in: query
+      schema:
+        type: string
+  responses:
+    NotFound:
+      description: Recurso nao encontrado
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    ValidationError:
+      description: Parametro invalido
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ValidationError"
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
